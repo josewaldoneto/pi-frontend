@@ -1,0 +1,353 @@
+<!-- <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Workspace</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container mt-4">
+    <a href="index.html" class="btn btn-secondary mb-3">← Voltar</a>
+    <div id="workspace-info" class="mb-4"></div>
+    <div id="workspace-tasks"></div>
+  </div>
+  <script src="workspace.js"></script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASC.IA</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4 class="fw-bold text-primary">ASC.IA</h4>
+            <button class="btn btn-link sidebar-toggle d-lg-none" id="sidebarToggle">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item" id="navbar-container">
+                    <a class="nav-link" href="index.html">
+                        <i class="bi bi-house-door"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>   
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link sidebar-toggle d-lg-none me-3" id="sidebarToggleMain">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h2 class="fw-semibold mb-0">Workspaces</h2>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Botão nova tarefa -->
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Nova tarefa
+                    </button>
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#codeReviewModal">
+                        <i class="bi bi-code-slash me-1"></i>
+                        Revisão de Código
+                    </button>
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#summarizeTextModal">
+                        <i class="bi bi-align-center me-1"></i>
+                        Resumir Texto
+                    </button>
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mindmapModal">
+                        <i class="bi bi-diagram-3 me-1"></i>
+                        Mapa Mental
+                    </button>
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#taskAssistantModal">
+                        <i class="bi bi-robot me-1"></i>
+                        Assistente de Tarefas
+                    </button>
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#membersModal">
+                        <i class="bi bi-people me-1"></i> Membros
+                    </button>
+                    <button class="btn" data-bs-toggle="modal" data-bs-target="#workspaceSettingsModal" title="Configurações">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Boas vindas -->
+            <div class="welcome-section mb-4">
+                <h1 class="display-6 fw-bold text-primary mb-2" id="workspace-name"></h1>
+                <p class="text-muted">
+                    Descrição: <span class="fw-medium" id="workspace-description"></span>.
+                </p>
+                <p class="text-muted" id="data-atual"></p>
+            </div>
+
+            <!-- Cartões de tarefas -->
+            <div class="row g-4 cards-container" id="tasks-container"></div>
+        </div>
+
+    <!-- Modal para Criar Tarefa -->
+    <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="createTaskModalLabel">Nova Tarefa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+            <form id="createTaskForm">
+            <div class="mb-3">
+                <label for="taskTitle" class="form-label">Título *</label>
+                <input type="text" class="form-control" id="taskTitle" required>
+            </div>
+            <div class="mb-3">
+                <label for="taskDescription" class="form-label">Descrição</label>
+                <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="taskStatus" class="form-label">Status</label>
+                <select class="form-select" id="taskStatus">
+                <option value="pendente">Pendente</option>
+                <option value="em andamento">Em andamento</option>
+                <option value="concluída">Concluída</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="taskPriority" class="form-label">Prioridade</label>
+                <select class="form-select" id="taskPriority">
+                <option value="baixa">Baixa</option>
+                <option value="media">Média</option>
+                <option value="alta">Alta</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="taskExpiration" class="form-label">Data de Expiração</label>
+                <input type="date" class="form-control" id="taskExpiration">
+            </div>
+            <div class="mb-3">
+                <label for="taskAttachment" class="form-label">Anexo (URL)</label>
+                <input type="text" class="form-control" id="taskAttachment" placeholder="Link para arquivo, se houver">
+            </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="createTaskBtn">Criar Tarefa</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal para code review -->
+    <div class="modal fade" id="codeReviewModal" tabindex="-1" aria-labelledby="codeReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="codeReviewModalLabel">Revisão de Código</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <form id="codeReviewForm">
+            <div class="mb-3">
+                <label for="codeLanguage" class="form-label">Linguagem</label>
+                <input type="text" class="form-control" id="codeLanguage" placeholder="Ex: JavaScript, Python" required>
+            </div>
+            <div class="mb-3">
+                <label for="codeInput" class="form-label">Código</label>
+                <textarea class="form-control" id="codeInput" rows="6" required></textarea>
+            </div>
+            </form>
+            <div id="codeReviewResult" class="mt-3"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="submitCodeReview">Revisar</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- modal resumir texto -->
+    <div class="modal fade" id="summarizeTextModal" tabindex="-1" aria-labelledby="summarizeTextModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="summarizeTextModalLabel">Resumir Texto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <form id="summarizeTextForm">
+            <div class="mb-3">
+                <label for="textToSummarize" class="form-label">Texto</label>
+                <textarea class="form-control" id="textToSummarize" rows="6" required></textarea>
+            </div>
+            </form>
+            <div id="summarizeTextResult" class="mt-3"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="submitSummarizeText">Resumir</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- modal mapa mental -->
+    <div class="modal fade" id="mindmapModal" tabindex="-1" aria-labelledby="mindmapModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="mindmapModalLabel">Gerar Ideias para Mapa Mental</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <form id="mindmapForm">
+            <div class="mb-3">
+                <label for="mindmapText" class="form-label">Texto Base</label>
+                <textarea class="form-control" id="mindmapText" rows="6" required></textarea>
+            </div>
+            </form>
+            <div id="mindmapResult" class="mt-3"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="submitMindmap">Gerar</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- modal para assistente de tarefas -->
+    <div class="modal fade" id="taskAssistantModal" tabindex="-1" aria-labelledby="taskAssistantModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="taskAssistantModalLabel">Assistente de Tarefas</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <form id="taskAssistantForm">
+            <div class="mb-3">
+                <label for="taskAssistantMessage" class="form-label">Mensagem</label>
+                <textarea class="form-control" id="taskAssistantMessage" rows="4" required></textarea>
+            </div>
+            </form>
+            <div id="taskAssistantResult" class="mt-3"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="submitTaskAssistant">Enviar</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- modal para membros -->
+    <div class="modal fade" id="membersModal" tabindex="-1" aria-labelledby="membersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="membersModalLabel">Gerenciar Membros</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <!-- Lista de membros -->
+            <h6>Membros do Workspace</h6>
+            <ul class="list-group mb-4" id="membersList"></ul>
+            <hr>
+            <!-- Adicionar novo membro -->
+            <h6>Adicionar Membro</h6>
+            <form id="addMemberForm" class="row g-2 align-items-end">
+            <div class="col-md-6">
+                <label for="userToAdd" class="form-label">Usuário</label>
+                <select class="form-select" id="userToAdd" required>
+                <option value="">Selecione um usuário</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="roleToAdd" class="form-label">Papel</label>
+                <input type="text" class="form-control" id="roleToAdd" placeholder="Ex: colaborador">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Adicionar</button>
+            </div>
+            </form>
+            <div id="addMemberMsg" class="mt-2"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal para Configurações do Workspace -->
+    <div class="modal fade" id="workspaceSettingsModal" tabindex="-1" aria-labelledby="workspaceSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="workspaceSettingsModalLabel">Configurações do Workspace</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <form id="workspaceSettingsForm">
+            <div class="mb-3">
+                <label for="workspaceSettingsName" class="form-label">Nome do Workspace</label>
+                <input type="text" class="form-control" id="workspaceSettingsName" required>
+            </div>
+            <div class="mb-3">
+                <label for="workspaceSettingsDescription" class="form-label">Descrição</label>
+                <textarea class="form-control" id="workspaceSettingsDescription" rows="3"></textarea>
+            </div>
+            </form>
+            <div id="workspaceSettingsMsg" class="mt-2"></div>
+            <hr>
+            <button class="btn btn-outline-danger w-100" id="deleteWorkspaceBtn">
+            <i class="bi bi-trash"></i> Excluir Workspace
+            </button>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="saveWorkspaceSettingsBtn">Salvar Alterações</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-5 py-3">
+        <small class="text-muted">ASC.IA © 2025</small>
+    </footer>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scriptWorkspace.js"></script>
+</body>
+</html>
